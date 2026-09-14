@@ -1,0 +1,155 @@
+<div class="search-container">
+  <header class="search-header">
+    <h1 class="title">Buscador de CEP</h1>
+    <p class="subtitle">Consulte dados de endereço em todo o Brasil via API ViaCEP</p>
+  </header>
+
+  <!-- Campo de Pesquisa -->
+  <div class="search-box">
+    <div class="input-wrapper">
+      <input
+        type="text"
+        id="cep-input"
+        class="cep-input"
+        placeholder="00000-000"
+        maxlength="9"
+        autocomplete="off"
+        [value]="cepInput()"
+        (input)="onCepInput($event)"
+        (keydown.enter)="search()"
+        aria-label="Informe o CEP"
+      />
+      @if (cepInput()) {
+        <button
+          type="button"
+          class="btn-clear"
+          (click)="clear()"
+          aria-label="Limpar campo"
+          title="Limpar"
+        >
+          &times;
+        </button>
+      }
+    </div>
+
+    <button
+      type="button"
+      id="btn-search"
+      class="btn-search"
+      [disabled]="!canSearch()"
+      (click)="search()"
+    >
+      @if (addressResource.isLoading()) {
+        <span class="spinner-sm" aria-hidden="true"></span>
+        <span>Buscando...</span>
+      } @else {
+        <span>Buscar</span>
+      }
+    </button>
+  </div>
+
+  <!-- Auxiliar de Validação -->
+  @if (validationHelper()) {
+    <div class="validation-helper">
+      {{ validationHelper() }}
+    </div>
+  }
+
+  <!-- Feedback: Carregando -->
+  @if (addressResource.isLoading()) {
+    <div class="state-card loading-card" role="status">
+      <div class="spinner"></div>
+      <p>Consultando base do ViaCEP...</p>
+    </div>
+  }
+
+  <!-- Feedback: Não Encontrado (erro: true retornado pela API) -->
+  @if (!addressResource.isLoading() && isNotFound()) {
+    <div class="state-card notfound-card" role="alert">
+      <span class="status-icon" aria-hidden="true">&#9888;</span>
+      <div>
+        <h3>CEP não localizado</h3>
+        <p>O CEP informado não consta na base de dados dos Correios.</p>
+      </div>
+    </div>
+  }
+
+  <!-- Feedback: Erro de Rede / Falha HTTP -->
+  @if (!addressResource.isLoading() && addressResource.error()) {
+    <div class="state-card error-card" role="alert">
+      <span class="status-icon" aria-hidden="true">&#10006;</span>
+      <div>
+        <h3>Falha na requisição</h3>
+        <p>Não foi possível conectar à API ViaCEP. Verifique sua conexão e tente novamente.</p>
+      </div>
+    </div>
+  }
+
+  <!-- Resultado do Endereço -->
+  @if (!addressResource.isLoading() && addressData(); as address) {
+    @defer {
+      <div class="result-card">
+        <div class="result-header">
+          <div>
+            <span class="cep-badge">{{ formattedResultCep() }}</span>
+            <h2 class="result-title">{{ address.localidade }} - {{ address.uf }}</h2>
+          </div>
+          <button
+            type="button"
+            class="btn-copy"
+            (click)="copyAddress()"
+            [title]="copyFeedback() ? 'Copiado!' : 'Copiar endereço completo'"
+          >
+            {{ copyFeedback() ? 'Copiado!' : 'Copiar' }}
+          </button>
+        </div>
+
+        <div class="address-grid">
+          <div class="data-group">
+            <span class="data-label">Logradouro</span>
+            <span class="data-value">{{ address.logradouro || 'Não informado / Zona Rural' }}</span>
+          </div>
+
+          @if (address.complemento) {
+            <div class="data-group">
+              <span class="data-label">Complemento</span>
+              <span class="data-value">{{ address.complemento }}</span>
+            </div>
+          }
+
+          <div class="data-group">
+            <span class="data-label">Bairro</span>
+            <span class="data-value">{{ address.bairro || 'Centro / Geral' }}</span>
+          </div>
+
+          <div class="data-group">
+            <span class="data-label">Cidade / UF</span>
+            <span class="data-value">{{ address.localidade }} / {{ address.uf }}</span>
+          </div>
+
+          @if (address.ddd) {
+            <div class="data-group">
+              <span class="data-label">DDD</span>
+              <span class="data-value">({{ address.ddd }})</span>
+            </div>
+          }
+
+          @if (address.ibge) {
+            <div class="data-group">
+              <span class="data-label">Código IBGE</span>
+              <span class="data-value">{{ address.ibge }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    } @loading {
+      <div class="state-card loading-card">
+        <p>Preparando exibição...</p>
+      </div>
+    } @error {
+      <div class="state-card error-card">
+        <p>Erro ao exibir os dados do endereço.</p>
+      </div>
+    }
+  }
+</div>
