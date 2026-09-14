@@ -4,7 +4,7 @@ Aplicação em Angular para consulta de endereços através de CEP, consumindo a
 
 ---
 
-## 🚀 Tecnologias
+## Tecnologias
 
 - **Angular**
 - **TypeScript**
@@ -12,14 +12,14 @@ Aplicação em Angular para consulta de endereços através de CEP, consumindo a
 
 ---
 
-## 💻 Como Executar
+## Como Executar
 
-### 1. Instalar as dependências
+### 1. Instalar dependências
 ```bash
 npm install
 ```
 
-### 2. Iniciar o servidor de desenvolvimento
+### 2. Iniciar servidor de desenvolvimento
 ```bash
 npm start
 ```
@@ -28,9 +28,9 @@ Acesse a aplicação no navegador em: [`http://localhost:4200`](http://localhost
 
 ---
 
-## 🛠️ Outros Comandos
+## Outros Comandos
 
-- **Build de produção:**
+- **Build de prod:**
   ```bash
   npm run build
   ```
