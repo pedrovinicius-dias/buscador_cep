@@ -4,7 +4,6 @@
     <p class="subtitle">Consulte dados de endereço em todo o Brasil via API ViaCEP</p>
   </header>
 
-  <!-- Campo de Pesquisa -->
   <div class="search-box">
     <div class="input-wrapper">
       <input
@@ -48,14 +47,12 @@
     </button>
   </div>
 
-  <!-- Auxiliar de Validação -->
   @if (validationHelper()) {
     <div class="validation-helper">
       {{ validationHelper() }}
     </div>
   }
 
-  <!-- Feedback: Carregando -->
   @if (addressResource.isLoading()) {
     <div class="state-card loading-card" role="status">
       <div class="spinner"></div>
@@ -63,7 +60,6 @@
     </div>
   }
 
-  <!-- Feedback: Não Encontrado (erro: true retornado pela API) -->
   @if (!addressResource.isLoading() && isNotFound()) {
     <div class="state-card notfound-card" role="alert">
       <span class="status-icon" aria-hidden="true">&#9888;</span>
@@ -74,7 +70,6 @@
     </div>
   }
 
-  <!-- Feedback: Erro de Rede / Falha HTTP -->
   @if (!addressResource.isLoading() && addressResource.error()) {
     <div class="state-card error-card" role="alert">
       <span class="status-icon" aria-hidden="true">&#10006;</span>
@@ -85,7 +80,6 @@
     </div>
   }
 
-  <!-- Resultado do Endereço -->
   @if (!addressResource.isLoading() && addressData(); as address) {
     @defer {
       <div class="result-card">
